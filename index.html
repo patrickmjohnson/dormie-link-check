@@ -115,7 +115,7 @@
         const uploadInput = document.getElementById('pdf-upload'), uploadContainer = document.getElementById('upload-container'), resultsContainer = document.getElementById('results-container'), loadingSpinner = document.getElementById('loading-spinner'), reviewWidget = document.getElementById('review-widget'), problemCountSpan = document.getElementById('problem-count'), prevProblemBtn = document.getElementById('prev-problem'), nextProblemBtn = document.getElementById('next-problem'), themeToggleBtn = document.getElementById('theme-toggle'), darkIcon = document.getElementById('theme-toggle-dark-icon'), lightIcon = document.getElementById('theme-toggle-light-icon');
 
         // --- State Variables ---
-        const REQUEST_DELAY = 200; // Can be faster now with our own proxy
+        const REQUEST_DELAY = 200;
         let linkQueue = [], problematicLinks = [], isQueueProcessing = false, currentProblemIndex = -1;
 
         // --- Theme Toggle ---
@@ -244,12 +244,17 @@
             
             let isOk = false;
             try {
-                // Use our own proxy now
                 const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
+                if (!response.ok) throw new Error(`API responded with status ${response.status}`);
+                
                 const data = await response.json();
-
                 let statusChip;
-                if (data.status >= 200 && data.status < 300) { 
+
+                if (data.error) {
+                    statusChip = `<span class="status-chip status-error"><span class="dot"></span>Error</span>`;
+                    finalUrlSpan.textContent = data.error;
+                    finalUrlContainer.style.display = 'block';
+                } else if (data.status >= 200 && data.status < 300) { 
                     isOk = true; 
                     statusChip = '<span class="status-chip status-ok"><span class="dot"></span>OK</span>'; 
                 } else { 
@@ -257,13 +262,13 @@
                 }
                 statusContainer.innerHTML = statusChip;
                 
-                if (data.finalUrl && data.finalUrl !== url) { 
+                if (data.finalUrl && data.finalUrl !== url && !data.error) { 
                     finalUrlSpan.textContent = data.finalUrl; 
                     finalUrlContainer.style.display = 'block'; 
                 }
             } catch (error) {
                 statusContainer.innerHTML = '<span class="status-chip status-error"><span class="dot"></span>Error</span>';
-                finalUrlSpan.textContent = 'Could not reach server.';
+                finalUrlSpan.textContent = `Could not reach proxy: ${error.message}`;
                 finalUrlContainer.style.display = 'block';
             }
 
@@ -335,8 +340,9 @@
             } else {
                 applyTheme(false);
             }
-            // No need to check proxy status anymore
-            document.querySelector('.bg-white.border').remove(); // Remove the old activation panel
+            // Remove the activation panel since it's no longer needed
+            const activationPanel = document.querySelector('.bg-dormie-offwhite.border');
+            if(activationPanel) activationPanel.remove();
         };
     </script>
 </body>
