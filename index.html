@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Libre+Baskerville&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            darkMode: 'class', // Enable dark mode based on class
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -21,7 +21,6 @@
                         'dormie-accent': '#EAE8E3',
                         'dormie-offwhite': '#FCFCFA',
                         'dormie-warn': '#D97706',
-                        // Dark mode palette
                         'dark-bg': '#1C1C1E',
                         'dark-surface': '#2C2C2E',
                         'dark-text': '#E5E5E7',
@@ -43,33 +42,21 @@
         .status-chip { display: inline-flex; align-items: center; padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; }
         .status-chip .dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
         
-        /* Light Mode Chips */
         .status-ok { color: #166534; background-color: #ECFDF5; } .status-ok .dot { background-color: #22C55E; }
-        .status-blocked { color: #92400E; background-color: #FFFBEB; } .status-blocked .dot { background-color: #F59E0B; }
         .status-broken { color: #991B1B; background-color: #FEF2F2; } .status-broken .dot { background-color: #EF4444; }
         .status-checking { color: #374151; background-color: #F3F4F6; } .status-checking .dot { background-color: #6B7280; }
         .status-error { color: #374151; background-color: #F3F4F6; } .status-error .dot { background-color: #EF4444; }
         .status-manual-ok { color: #166534; background-color: #ECFDF5; border: 1px solid #D1FAE5; } .status-manual-ok .dot { background-color: #22C55E; }
         .status-manual-broken { color: #991B1B; background-color: #FEF2F2; border: 1px solid #FEE2E2; } .status-manual-broken .dot { background-color: #EF4444; }
-        .status-manual-required { color: #92400E; background-color: #FFFBEB; border: 1px solid #FEF3C7;} .status-manual-required .dot { background-color: #F59E0B; }
         
-        /* Dark Mode Chips */
         .dark .status-ok { color: #A7F3D0; background-color: #052e16; } .dark .status-ok .dot { background-color: #4ADE80; }
-        .dark .status-blocked { color: #FCD34D; background-color: #451a03; } .dark .status-blocked .dot { background-color: #FBBF24; }
         .dark .status-broken { color: #FCA5A5; background-color: #450a0a; } .dark .status-broken .dot { background-color: #F87171; }
         .dark .status-checking { color: #D1D5DB; background-color: #374151; } .dark .status-checking .dot { background-color: #9CA3AF; }
         .dark .status-error { color: #D1D5DB; background-color: #374151; } .dark .status-error .dot { background-color: #F87171; }
         .dark .status-manual-ok { color: #A7F3D0; background-color: #052e16; border: 1px solid #10B981; } .dark .status-manual-ok .dot { background-color: #4ADE80; }
         .dark .status-manual-broken { color: #FCA5A5; background-color: #450a0a; border: 1px solid #DC2626; } .dark .status-manual-broken .dot { background-color: #F87171; }
-        .dark .status-manual-required { color: #FCD34D; background-color: #451a03; border: 1px solid #D97706;} .dark .status-manual-required .dot { background-color: #FBBF24; }
 
         .drag-over { border-color: #A8AD97; } .dark .drag-over { background-color: #3A3A3C; }
-
-        .indicator-bulb { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; transition: background-color 0.3s ease; }
-        .bulb-red { background-color: #EF4444; }
-        .bulb-yellow { background-color: #F59E0B; }
-        .bulb-green { background-color: #22C55E; }
-
         .highlight-problem { box-shadow: 0 0 0 2px #A8AD97; border-radius: 0.5rem; } .dark .highlight-problem { box-shadow: 0 0 0 2px #8E8E93; }
     </style>
 </head>
@@ -88,18 +75,6 @@
         </header>
 
         <main class="pb-40">
-            <!-- Control Panel -->
-            <div class="bg-dormie-offwhite dark:bg-dark-surface border border-dormie-accent dark:border-dark-accent p-4 rounded-lg relative mb-8 flex flex-col sm:flex-row items-center justify-between shadow-sm gap-4">
-                <div class="flex items-center">
-                    <span id="indicator-bulb" class="indicator-bulb bulb-yellow"></span>
-                    <div>
-                        <strong id="indicator-title" class="font-semibold text-dormie-dark dark:text-dark-text">Link Checker Status</strong>
-                        <p id="indicator-text" class="text-sm text-gray-500 dark:text-dark-subtle">Checking activation status...</p>
-                    </div>
-                </div>
-                <button id="activate-button" class="px-5 py-2 bg-dormie-dark dark:bg-dormie-offwhite dark:text-dark-bg hover:bg-opacity-90 dark:hover:bg-opacity-90 rounded-md text-white font-semibold transition-colors disabled:bg-gray-400 dark:disabled:bg-dark-accent disabled:cursor-not-allowed">Activate Tool</button>
-            </div>
-
             <!-- File Upload Section -->
             <div id="upload-container" class="mb-8">
                 <label for="pdf-upload" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dormie-accent dark:border-dark-accent border-dashed rounded-lg cursor-pointer bg-dormie-offwhite dark:bg-dark-surface hover:bg-dormie-beige/50 dark:hover:bg-dark-accent/50 transition-colors">
@@ -133,16 +108,15 @@
                 <button id="next-problem" class="p-2 bg-dormie-beige dark:bg-dark-accent hover:bg-dormie-accent dark:hover:bg-dark-accent/70 rounded-md text-dormie-dark dark:text-dark-text transition-colors">&gt;</button>
             </div>
         </div>
-        <div id="widget-notice" class="hidden mt-2 text-center text-sm bg-dormie-warn/10 text-dormie-warn p-2 rounded-md border border-dormie-warn/20"></div>
     </div>
 
     <script type="module">
         // --- DOM Elements ---
-        const uploadInput = document.getElementById('pdf-upload'), uploadContainer = document.getElementById('upload-container'), resultsContainer = document.getElementById('results-container'), loadingSpinner = document.getElementById('loading-spinner'), activateButton = document.getElementById('activate-button'), indicatorBulb = document.getElementById('indicator-bulb'), indicatorText = document.getElementById('indicator-text'), reviewWidget = document.getElementById('review-widget'), problemCountSpan = document.getElementById('problem-count'), prevProblemBtn = document.getElementById('prev-problem'), nextProblemBtn = document.getElementById('next-problem'), widgetNotice = document.getElementById('widget-notice'), themeToggleBtn = document.getElementById('theme-toggle'), darkIcon = document.getElementById('theme-toggle-dark-icon'), lightIcon = document.getElementById('theme-toggle-light-icon');
+        const uploadInput = document.getElementById('pdf-upload'), uploadContainer = document.getElementById('upload-container'), resultsContainer = document.getElementById('results-container'), loadingSpinner = document.getElementById('loading-spinner'), reviewWidget = document.getElementById('review-widget'), problemCountSpan = document.getElementById('problem-count'), prevProblemBtn = document.getElementById('prev-problem'), nextProblemBtn = document.getElementById('next-problem'), themeToggleBtn = document.getElementById('theme-toggle'), darkIcon = document.getElementById('theme-toggle-dark-icon'), lightIcon = document.getElementById('theme-toggle-light-icon');
 
         // --- State Variables ---
-        const PROXY_URL = 'https://cors-anywhere.herokuapp.com/', REQUEST_DELAY = 500;
-        let proxyCheckInterval = null, linkQueue = [], problematicLinks = [], isQueueProcessing = false, currentProblemIndex = -1;
+        const REQUEST_DELAY = 200; // Can be faster now with our own proxy
+        let linkQueue = [], problematicLinks = [], isQueueProcessing = false, currentProblemIndex = -1;
 
         // --- Theme Toggle ---
         function applyTheme(isDark) {
@@ -162,35 +136,6 @@
             applyTheme(isDark);
         });
 
-        // --- Activation & Proxy Logic ---
-        function updateIndicator(color, text, isButtonEnabled = true) {
-            indicatorBulb.className = `indicator-bulb bulb-${color}`;
-            indicatorText.textContent = text;
-            activateButton.disabled = !isButtonEnabled;
-        }
-
-        async function checkProxyStatus() {
-            try {
-                const response = await fetch(`${PROXY_URL}https://example.com`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                if (response.ok) {
-                    updateIndicator('green', 'Ready to check links.', false);
-                    activateButton.textContent = "Activated";
-                    if (proxyCheckInterval) clearInterval(proxyCheckInterval);
-                } else {
-                    updateIndicator('red', 'Activation required. Click button to enable.', true);
-                }
-            } catch (error) {
-                updateIndicator('red', 'Could not connect to activation service.', true);
-                if (proxyCheckInterval) clearInterval(proxyCheckInterval);
-            }
-        }
-        activateButton.addEventListener('click', () => {
-            window.open(`${PROXY_URL}corsdemo`, '_blank');
-            updateIndicator('yellow', 'Waiting for activation in new tab...', false);
-            if (proxyCheckInterval) clearInterval(proxyCheckInterval);
-            proxyCheckInterval = setInterval(checkProxyStatus, 3000);
-        });
-
         // --- File Handling & Processing ---
         uploadContainer.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); uploadContainer.querySelector('label').classList.add('drag-over'); });
         uploadContainer.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); uploadContainer.querySelector('label').classList.remove('drag-over'); });
@@ -204,7 +149,6 @@
             loadingSpinner.classList.remove('hidden');
             linkQueue = []; problematicLinks = []; currentProblemIndex = -1;
             updateReviewWidget();
-            widgetNotice.classList.add('hidden');
 
             for (const file of files) {
                 if (file.type === 'application/pdf') await processPdf(file);
@@ -288,52 +232,35 @@
             const listItem = document.getElementById(task.elementId);
             if (listItem) listItem.querySelector('.status-container').innerHTML = `<span class="status-chip status-checking"><span class="dot"></span>Checking</span>`;
             
-            const isRateLimited = await checkLinkStatus(task.url, task.elementId);
-
-            if (isRateLimited) {
-                linkQueue.unshift(task);
-                isQueueProcessing = false;
-                handleRateLimitFallback();
-                return;
-            }
+            await checkLinkStatus(task.url, task.elementId);
             
             setTimeout(processLinkQueue, REQUEST_DELAY);
         }
 
-        function handleRateLimitFallback() {
-            widgetNotice.textContent = 'Rate limit hit. Please check remaining links manually.';
-            widgetNotice.classList.remove('hidden');
-            reviewWidget.classList.remove('hidden');
-            
-            linkQueue.forEach(task => {
-                const listItem = document.getElementById(task.elementId);
-                if (listItem) {
-                    const statusContainer = listItem.querySelector('.status-container');
-                    statusContainer.innerHTML = `<span class="status-chip status-manual-required"><span class="dot"></span>Manual Check</span>`;
-                    problematicLinks.push(task.elementId);
-                    addManualActions(task.elementId);
-                }
-            });
-            linkQueue = [];
-            updateReviewWidget();
-        }
-
         async function checkLinkStatus(url, elementId) {
             const listItem = document.getElementById(elementId);
-            if (!listItem) return false;
+            if (!listItem) return;
             const statusContainer = listItem.querySelector('.status-container'), finalUrlContainer = listItem.querySelector('.final-url-container'), finalUrlSpan = listItem.querySelector('.final-url');
             
             let isOk = false;
             try {
-                const response = await fetch(`${PROXY_URL}${url}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                // Use our own proxy now
+                const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+
                 let statusChip;
-                if (response.ok) { isOk = true; statusChip = '<span class="status-chip status-ok"><span class="dot"></span>OK</span>'; } 
-                else if (response.status === 403) { statusChip = `<span class="status-chip status-blocked"><span class="dot"></span>Blocked</span>`; } 
-                else if (response.status === 429) { return true; } 
-                else { statusChip = `<span class="status-chip status-broken"><span class="dot"></span>Broken</span>`; }
+                if (data.status >= 200 && data.status < 300) { 
+                    isOk = true; 
+                    statusChip = '<span class="status-chip status-ok"><span class="dot"></span>OK</span>'; 
+                } else { 
+                    statusChip = `<span class="status-chip status-broken"><span class="dot"></span>Broken (${data.status})</span>`; 
+                }
                 statusContainer.innerHTML = statusChip;
-                const finalUrl = response.url.replace(PROXY_URL, '');
-                if (finalUrl !== url) { finalUrlSpan.textContent = finalUrl; finalUrlContainer.style.display = 'block'; }
+                
+                if (data.finalUrl && data.finalUrl !== url) { 
+                    finalUrlSpan.textContent = data.finalUrl; 
+                    finalUrlContainer.style.display = 'block'; 
+                }
             } catch (error) {
                 statusContainer.innerHTML = '<span class="status-chip status-error"><span class="dot"></span>Error</span>';
                 finalUrlSpan.textContent = 'Could not reach server.';
@@ -345,7 +272,6 @@
                 addManualActions(elementId);
                 updateReviewWidget();
             }
-            return false;
         }
 
         // --- Review Widget & Manual Override Logic ---
@@ -380,7 +306,7 @@
 
         function updateReviewWidget() {
             const count = problematicLinks.length;
-            reviewWidget.classList.toggle('hidden', count === 0 && widgetNotice.classList.contains('hidden'));
+            reviewWidget.classList.toggle('hidden', count === 0);
             problemCountSpan.textContent = `${count} link${count > 1 ? 's' : ''} need attention`;
             if (count === 0 && currentProblemIndex !== -1) {
                 if (problematicLinks[currentProblemIndex]) document.getElementById(problematicLinks[currentProblemIndex])?.classList.remove('highlight-problem');
@@ -404,13 +330,13 @@
         
         // --- Initial Load ---
         window.onload = () => {
-            // Check for saved theme preference, or use system preference
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 applyTheme(true);
             } else {
                 applyTheme(false);
             }
-            checkProxyStatus();
+            // No need to check proxy status anymore
+            document.querySelector('.bg-white.border').remove(); // Remove the old activation panel
         };
     </script>
 </body>
