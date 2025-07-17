@@ -42,6 +42,7 @@
         .status-chip { display: inline-flex; align-items: center; padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; }
         .status-chip .dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
         
+        /* Light Mode Chips */
         .status-ok { color: #166534; background-color: #ECFDF5; } .status-ok .dot { background-color: #22C55E; }
         .status-broken { color: #991B1B; background-color: #FEF2F2; } .status-broken .dot { background-color: #EF4444; }
         .status-checking { color: #374151; background-color: #F3F4F6; } .status-checking .dot { background-color: #6B7280; }
@@ -49,6 +50,7 @@
         .status-manual-ok { color: #166534; background-color: #ECFDF5; border: 1px solid #D1FAE5; } .status-manual-ok .dot { background-color: #22C55E; }
         .status-manual-broken { color: #991B1B; background-color: #FEF2F2; border: 1px solid #FEE2E2; } .status-manual-broken .dot { background-color: #EF4444; }
         
+        /* Dark Mode Chips */
         .dark .status-ok { color: #A7F3D0; background-color: #052e16; } .dark .status-ok .dot { background-color: #4ADE80; }
         .dark .status-broken { color: #FCA5A5; background-color: #450a0a; } .dark .status-broken .dot { background-color: #F87171; }
         .dark .status-checking { color: #D1D5DB; background-color: #374151; } .dark .status-checking .dot { background-color: #9CA3AF; }
@@ -112,7 +114,17 @@
 
     <script type="module">
         // --- DOM Elements ---
-        const uploadInput = document.getElementById('pdf-upload'), uploadContainer = document.getElementById('upload-container'), resultsContainer = document.getElementById('results-container'), loadingSpinner = document.getElementById('loading-spinner'), reviewWidget = document.getElementById('review-widget'), problemCountSpan = document.getElementById('problem-count'), prevProblemBtn = document.getElementById('prev-problem'), nextProblemBtn = document.getElementById('next-problem'), themeToggleBtn = document.getElementById('theme-toggle'), darkIcon = document.getElementById('theme-toggle-dark-icon'), lightIcon = document.getElementById('theme-toggle-light-icon');
+        const uploadInput = document.getElementById('pdf-upload');
+        const uploadContainer = document.getElementById('upload-container');
+        const resultsContainer = document.getElementById('results-container');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const reviewWidget = document.getElementById('review-widget');
+        const problemCountSpan = document.getElementById('problem-count');
+        const prevProblemBtn = document.getElementById('prev-problem');
+        const nextProblemBtn = document.getElementById('next-problem');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
 
         // --- State Variables ---
         const REQUEST_DELAY = 200;
@@ -340,9 +352,6 @@
             } else {
                 applyTheme(false);
             }
-            // Remove the activation panel since it's no longer needed
-            const activationPanel = document.querySelector('.bg-dormie-offwhite.border');
-            if(activationPanel) activationPanel.remove();
         };
     </script>
 </body>
