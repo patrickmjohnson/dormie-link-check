@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Libre+Baskerville&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class', // Enable dark mode based on class
             theme: {
                 extend: {
                     colors: {
@@ -20,6 +21,12 @@
                         'dormie-accent': '#EAE8E3',
                         'dormie-offwhite': '#FCFCFA',
                         'dormie-warn': '#D97706',
+                        // Dark mode palette
+                        'dark-bg': '#1C1C1E',
+                        'dark-surface': '#2C2C2E',
+                        'dark-text': '#E5E5E7',
+                        'dark-subtle': '#8E8E93',
+                        'dark-accent': '#3A3A3C',
                     },
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
@@ -30,12 +37,13 @@
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F9F7F2; color: #3D3D3D; scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`;
 
         .status-chip { display: inline-flex; align-items: center; padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; }
         .status-chip .dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
         
+        /* Light Mode Chips */
         .status-ok { color: #166534; background-color: #ECFDF5; } .status-ok .dot { background-color: #22C55E; }
         .status-blocked { color: #92400E; background-color: #FFFBEB; } .status-blocked .dot { background-color: #F59E0B; }
         .status-broken { color: #991B1B; background-color: #FEF2F2; } .status-broken .dot { background-color: #EF4444; }
@@ -45,44 +53,60 @@
         .status-manual-broken { color: #991B1B; background-color: #FEF2F2; border: 1px solid #FEE2E2; } .status-manual-broken .dot { background-color: #EF4444; }
         .status-manual-required { color: #92400E; background-color: #FFFBEB; border: 1px solid #FEF3C7;} .status-manual-required .dot { background-color: #F59E0B; }
         
-        .drag-over { border-color: #A8AD97; background-color: #EFEBE4; }
+        /* Dark Mode Chips */
+        .dark .status-ok { color: #A7F3D0; background-color: #052e16; } .dark .status-ok .dot { background-color: #4ADE80; }
+        .dark .status-blocked { color: #FCD34D; background-color: #451a03; } .dark .status-blocked .dot { background-color: #FBBF24; }
+        .dark .status-broken { color: #FCA5A5; background-color: #450a0a; } .dark .status-broken .dot { background-color: #F87171; }
+        .dark .status-checking { color: #D1D5DB; background-color: #374151; } .dark .status-checking .dot { background-color: #9CA3AF; }
+        .dark .status-error { color: #D1D5DB; background-color: #374151; } .dark .status-error .dot { background-color: #F87171; }
+        .dark .status-manual-ok { color: #A7F3D0; background-color: #052e16; border: 1px solid #10B981; } .dark .status-manual-ok .dot { background-color: #4ADE80; }
+        .dark .status-manual-broken { color: #FCA5A5; background-color: #450a0a; border: 1px solid #DC2626; } .dark .status-manual-broken .dot { background-color: #F87171; }
+        .dark .status-manual-required { color: #FCD34D; background-color: #451a03; border: 1px solid #D97706;} .dark .status-manual-required .dot { background-color: #FBBF24; }
+
+        .drag-over { border-color: #A8AD97; } .dark .drag-over { background-color: #3A3A3C; }
 
         .indicator-bulb { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; transition: background-color 0.3s ease; }
         .bulb-red { background-color: #EF4444; }
         .bulb-yellow { background-color: #F59E0B; }
         .bulb-green { background-color: #22C55E; }
 
-        .highlight-problem { box-shadow: 0 0 0 2px #A8AD97; border-radius: 0.5rem; }
+        .highlight-problem { box-shadow: 0 0 0 2px #A8AD97; border-radius: 0.5rem; } .dark .highlight-problem { box-shadow: 0 0 0 2px #8E8E93; }
     </style>
 </head>
-<body class="bg-dormie-beige text-dormie-dark">
+<body class="bg-dormie-beige text-dormie-dark dark:bg-dark-bg dark:text-dark-text transition-colors duration-300">
 
     <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl">
-        <header class="text-center mb-10">
-            <h1 class="font-serif text-4xl sm:text-5xl text-dormie-dark">PDF Link Checker</h1>
-            <p class="mt-3 text-gray-500 text-base">A tool for Dormie to verify PDF hyperlinks.</p>
+        <header class="text-center mb-10 relative">
+            <h1 class="font-serif text-4xl sm:text-5xl text-dormie-dark dark:text-dark-text">PDF Link Checker</h1>
+            <p class="mt-3 text-gray-500 dark:text-dark-subtle text-base">A tool for Dormie to verify PDF hyperlinks.</p>
+            <div class="absolute top-0 right-0">
+                <button id="theme-toggle" class="p-2 rounded-full text-gray-500 dark:text-dark-subtle hover:bg-dormie-accent dark:hover:bg-dark-accent transition-colors">
+                    <svg id="theme-toggle-dark-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                    <svg id="theme-toggle-light-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-15.66l-.707.707M5.05 18.95l-.707.707M21 12h-1M4 12H3m15.66 8.66l-.707-.707M5.05 5.05l-.707-.707" /></svg>
+                </button>
+            </div>
         </header>
 
         <main class="pb-40">
             <!-- Control Panel -->
-            <div class="bg-dormie-offwhite border border-dormie-accent p-4 rounded-lg relative mb-8 flex flex-col sm:flex-row items-center justify-between shadow-sm gap-4">
+            <div class="bg-dormie-offwhite dark:bg-dark-surface border border-dormie-accent dark:border-dark-accent p-4 rounded-lg relative mb-8 flex flex-col sm:flex-row items-center justify-between shadow-sm gap-4">
                 <div class="flex items-center">
                     <span id="indicator-bulb" class="indicator-bulb bulb-yellow"></span>
                     <div>
-                        <strong id="indicator-title" class="font-semibold text-dormie-dark">Link Checker Status</strong>
-                        <p id="indicator-text" class="text-sm text-gray-500">Checking activation status...</p>
+                        <strong id="indicator-title" class="font-semibold text-dormie-dark dark:text-dark-text">Link Checker Status</strong>
+                        <p id="indicator-text" class="text-sm text-gray-500 dark:text-dark-subtle">Checking activation status...</p>
                     </div>
                 </div>
-                <button id="activate-button" class="px-5 py-2 bg-dormie-dark hover:bg-opacity-90 rounded-md text-white font-semibold transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">Activate Tool</button>
+                <button id="activate-button" class="px-5 py-2 bg-dormie-dark dark:bg-dormie-offwhite dark:text-dark-bg hover:bg-opacity-90 dark:hover:bg-opacity-90 rounded-md text-white font-semibold transition-colors disabled:bg-gray-400 dark:disabled:bg-dark-accent disabled:cursor-not-allowed">Activate Tool</button>
             </div>
 
             <!-- File Upload Section -->
             <div id="upload-container" class="mb-8">
-                <label for="pdf-upload" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dormie-accent border-dashed rounded-lg cursor-pointer bg-dormie-offwhite hover:bg-dormie-beige/50 transition-colors">
+                <label for="pdf-upload" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dormie-accent dark:border-dark-accent border-dashed rounded-lg cursor-pointer bg-dormie-offwhite dark:bg-dark-surface hover:bg-dormie-beige/50 dark:hover:bg-dark-accent/50 transition-colors">
                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg class="w-10 h-10 mb-3 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold text-dormie-sage">Click to upload</span> or drag and drop</p>
-                        <p class="text-xs text-gray-400">PDF files only (scans page 2 only)</p>
+                        <svg class="w-10 h-10 mb-3 text-gray-300 dark:text-dark-subtle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                        <p class="mb-2 text-sm text-gray-500 dark:text-dark-subtle"><span class="font-semibold text-dormie-sage dark:text-dormie-sage">Click to upload</span> or drag and drop</p>
+                        <p class="text-xs text-gray-400 dark:text-dark-subtle/70">PDF files only (scans page 2 only)</p>
                     </div>
                     <input id="pdf-upload" type="file" class="hidden" accept=".pdf" multiple />
                 </label>
@@ -91,7 +115,7 @@
             <!-- Loading Spinner -->
             <div id="loading-spinner" class="text-center my-10 hidden">
                  <svg class="animate-spin h-8 w-8 text-dormie-sage mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <p class="mt-2 text-gray-500">Processing files and checking links...</p>
+                <p class="mt-2 text-gray-500 dark:text-dark-subtle">Processing files and checking links...</p>
             </div>
 
             <!-- Results Section -->
@@ -100,13 +124,13 @@
     </div>
 
     <!-- Floating Review Widget -->
-    <div id="review-widget" class="hidden fixed bottom-5 right-5 bg-dormie-offwhite/80 backdrop-blur-md p-3 rounded-lg shadow-2xl border border-dormie-accent w-64">
-        <p class="text-sm font-semibold text-dormie-dark mb-2">Review Problem Links</p>
+    <div id="review-widget" class="hidden fixed bottom-5 right-5 bg-dormie-offwhite/80 dark:bg-dark-surface/80 backdrop-blur-md p-3 rounded-lg shadow-2xl border border-dormie-accent dark:border-dark-accent w-64">
+        <p class="text-sm font-semibold text-dormie-dark dark:text-dark-text mb-2">Review Problem Links</p>
         <div class="flex items-center justify-between">
-            <span id="problem-count" class="text-sm text-gray-600">0 links need attention</span>
+            <span id="problem-count" class="text-sm text-gray-600 dark:text-dark-subtle">0 links need attention</span>
             <div class="flex gap-2">
-                <button id="prev-problem" class="p-2 bg-dormie-beige hover:bg-dormie-accent rounded-md text-dormie-dark transition-colors">&lt;</button>
-                <button id="next-problem" class="p-2 bg-dormie-beige hover:bg-dormie-accent rounded-md text-dormie-dark transition-colors">&gt;</button>
+                <button id="prev-problem" class="p-2 bg-dormie-beige dark:bg-dark-accent hover:bg-dormie-accent dark:hover:bg-dark-accent/70 rounded-md text-dormie-dark dark:text-dark-text transition-colors">&lt;</button>
+                <button id="next-problem" class="p-2 bg-dormie-beige dark:bg-dark-accent hover:bg-dormie-accent dark:hover:bg-dark-accent/70 rounded-md text-dormie-dark dark:text-dark-text transition-colors">&gt;</button>
             </div>
         </div>
         <div id="widget-notice" class="hidden mt-2 text-center text-sm bg-dormie-warn/10 text-dormie-warn p-2 rounded-md border border-dormie-warn/20"></div>
@@ -114,11 +138,29 @@
 
     <script type="module">
         // --- DOM Elements ---
-        const uploadInput = document.getElementById('pdf-upload'), uploadContainer = document.getElementById('upload-container'), resultsContainer = document.getElementById('results-container'), loadingSpinner = document.getElementById('loading-spinner'), activateButton = document.getElementById('activate-button'), indicatorBulb = document.getElementById('indicator-bulb'), indicatorText = document.getElementById('indicator-text'), reviewWidget = document.getElementById('review-widget'), problemCountSpan = document.getElementById('problem-count'), prevProblemBtn = document.getElementById('prev-problem'), nextProblemBtn = document.getElementById('next-problem'), widgetNotice = document.getElementById('widget-notice');
+        const uploadInput = document.getElementById('pdf-upload'), uploadContainer = document.getElementById('upload-container'), resultsContainer = document.getElementById('results-container'), loadingSpinner = document.getElementById('loading-spinner'), activateButton = document.getElementById('activate-button'), indicatorBulb = document.getElementById('indicator-bulb'), indicatorText = document.getElementById('indicator-text'), reviewWidget = document.getElementById('review-widget'), problemCountSpan = document.getElementById('problem-count'), prevProblemBtn = document.getElementById('prev-problem'), nextProblemBtn = document.getElementById('next-problem'), widgetNotice = document.getElementById('widget-notice'), themeToggleBtn = document.getElementById('theme-toggle'), darkIcon = document.getElementById('theme-toggle-dark-icon'), lightIcon = document.getElementById('theme-toggle-light-icon');
 
         // --- State Variables ---
         const PROXY_URL = 'https://cors-anywhere.herokuapp.com/', REQUEST_DELAY = 500;
         let proxyCheckInterval = null, linkQueue = [], problematicLinks = [], isQueueProcessing = false, currentProblemIndex = -1;
+
+        // --- Theme Toggle ---
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+            }
+        }
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            applyTheme(isDark);
+        });
 
         // --- Activation & Proxy Logic ---
         function updateIndicator(color, text, isButtonEnabled = true) {
@@ -173,7 +215,7 @@
 
         async function processPdf(file) {
             const fileId = `file-${Date.now()}`;
-            const fileResultHtml = `<div class="bg-dormie-offwhite rounded-lg shadow-sm mb-6" id="${fileId}"><div class="p-4 border-b border-dormie-accent"><h2 class="text-lg font-semibold text-dormie-dark truncate">${file.name}</h2></div><div class="p-4 space-y-2"></div></div>`;
+            const fileResultHtml = `<div class="bg-dormie-offwhite dark:bg-dark-surface rounded-lg shadow-sm mb-6" id="${fileId}"><div class="p-4 border-b border-dormie-accent dark:border-dark-accent"><h2 class="text-lg font-semibold text-dormie-dark dark:text-dark-text truncate">${file.name}</h2></div><div class="p-4 space-y-2"></div></div>`;
             resultsContainer.insertAdjacentHTML('beforeend', fileResultHtml);
             const listElement = document.getElementById(fileId).querySelector('.space-y-2');
             const uniqueUrls = new Map();
@@ -183,7 +225,7 @@
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
                 if (pdf.numPages < 2) {
-                    listElement.innerHTML = `<p class="text-gray-500">This PDF has fewer than 2 pages. No links were scanned.</p>`;
+                    listElement.innerHTML = `<p class="text-gray-500 dark:text-dark-subtle">This PDF has fewer than 2 pages. No links were scanned.</p>`;
                     return;
                 }
 
@@ -200,12 +242,12 @@
                         
                         const listItem = document.createElement('div');
                         listItem.id = linkId;
-                        listItem.className = 'p-3 bg-dormie-offwhite border border-dormie-accent rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 transition-shadow duration-300';
+                        listItem.className = 'p-3 bg-dormie-offwhite dark:bg-dark-surface border border-dormie-accent dark:border-dark-accent rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 transition-shadow duration-300';
                         listItem.innerHTML = `
                             <div class="flex-grow overflow-hidden">
-                                <p class="text-base font-semibold text-dormie-dark truncate" title="${linkText}">${linkText}</p>
-                                <p class="text-xs text-gray-400 truncate">URL: <a href="${url}" target="_blank" class="text-dormie-sage hover:underline">${url}</a></p>
-                                <p class="text-xs text-gray-400 truncate final-url-container" style="display: none;">Final: <span class="final-url text-gray-600"></span></p>
+                                <p class="text-base font-semibold text-dormie-dark dark:text-dark-text truncate" title="${linkText}">${linkText}</p>
+                                <p class="text-xs text-gray-400 dark:text-dark-subtle truncate">URL: <a href="${url}" target="_blank" class="text-dormie-sage hover:underline">${url}</a></p>
+                                <p class="text-xs text-gray-400 dark:text-dark-subtle truncate final-url-container" style="display: none;">Final: <span class="final-url text-gray-600 dark:text-dark-subtle"></span></p>
                             </div>
                             <div class="flex-shrink-0 flex items-center gap-3">
                                 <div class="manual-actions hidden"></div>
@@ -218,7 +260,7 @@
                     }
                 });
                 
-                if (uniqueUrls.size === 0) listElement.innerHTML = `<p class="text-gray-500">No unique links found on page 2.</p>`;
+                if (uniqueUrls.size === 0) listElement.innerHTML = `<p class="text-gray-500 dark:text-dark-subtle">No unique links found on page 2.</p>`;
             } catch (error) {
                 document.getElementById(fileId).querySelector('.p-4').innerHTML = `<p class="text-red-600">Could not process PDF.</p>`;
             }
@@ -359,7 +401,17 @@
 
         prevProblemBtn.addEventListener('click', () => navigateProblems(-1));
         nextProblemBtn.addEventListener('click', () => navigateProblems(1));
-        window.onload = checkProxyStatus;
+        
+        // --- Initial Load ---
+        window.onload = () => {
+            // Check for saved theme preference, or use system preference
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                applyTheme(true);
+            } else {
+                applyTheme(false);
+            }
+            checkProxyStatus();
+        };
     </script>
 </body>
 </html>
